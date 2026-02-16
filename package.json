@@ -1,0 +1,15 @@
+{
+  "name": "comfyui",
+  "version": "0.0.1-SNAPSHOT",
+  "private": true,
+  "description": "Description for jugo",
+  "license": "UNLICENSED",
+  "scripts": {
+    "infra:down": "docker compose -f docker-compose.yml down -v",
+    "infra:up": "docker compose -f docker-compose.yml up -d",
+    "infra:ps": "docker compose -f docker-compose.yml ps",
+    "infra:dev:up": "docker compose -f docker-compose-dev.yml up -d",
+    "infra:dev:ps": "docker compose -f docker-compose-dev.yml ps",
+    "infra:dev:down": "docker compose -f docker-compose-dev.yml down -v"
+    }
+}
