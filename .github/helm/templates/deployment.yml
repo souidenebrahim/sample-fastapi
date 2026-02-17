@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
         - name: fastapi-sample-dep
-          image: touches-online-registry:5050/fastapi-sample:latest
+          image: k3d-touches-online-registry:5050/fastapi-sample:latest
           ports:
             - containerPort: 3050
