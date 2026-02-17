@@ -1,0 +1,42 @@
+name: GitHub Actions Demo
+run-name: "${{ github.actor }}: ${{ inputs.environment }} -  ${{ github.run_number }}"
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: pick environment
+        default: dev
+        options:
+          - dev
+          # - qa
+          # - prod
+
+jobs:
+  run-project-tests:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create environment file
+        run: |
+          echo "VERSION=$(cat version.json | jq -r .version | sed -r "s/[x]+/${{ github.run_number }}/g")" >> $GITHUB_ENV
+      - name: Plot inputs
+        run: |
+          echo "environment is ${{ inputs.environment }}"
+          echo "version is ${{ env.VERSION }}"
+      - name: Install dependencies
+        run: npm install
+      - name: Build and tag Docker image
+        run: |
+          sudo docker build -t fastapi-sample:latest . 
+          sudo docker tag docker tag fastapi-sample:latest studio-registry:5000/fastapi-sample:latest
+          sudo docker push studio-registry:5000/fastapi-sample:latest
+
+      - name: Deploy to Kubernetes
+        # run: |
+        #   sudo kubectl delete -f ./.github/dep.yaml
+        #   sudo kubectl apply -f ./.github/dep.yaml --patch '{"spec": {"template": {"spec": {"containers":{"tag":${{ env.VERSION }}}}}}}'
+        run: |
+          helm uninstall fastapi-sample -n touches-online-qa --ignore-not-found || true
+          helm upgrade --install -f .github/helm/values-${{ inputs.environment }}.yaml --set fastapi-sample.tag=${{ env.VERSION }} fastapi-sample  .github/helm -n touches-online-qa

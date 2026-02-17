@@ -1,0 +1,9 @@
+apiVersion: v2
+name: pulpo
+description: A Helm chart for pulpo
+
+type: application
+
+version: 0.0.1
+
+appVersion: "v0.0.1"
