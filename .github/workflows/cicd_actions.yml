@@ -28,13 +28,10 @@ jobs:
       - name: Build and tag Docker image
         run: |
           sudo docker build -t fastapi-sample:latest . 
-          sudo docker tag fastapi-sample:latest touches-online-registry:5050/fastapi-sample:latest
-          sudo docker push touches-online-registry:5050/fastapi-sample:latest
+          sudo docker tag fastapi-sample:latest k3d-touches-online-registry:5050/fastapi-sample:latest
+          sudo docker push k3d-touches-online-registry:5050/fastapi-sample:latest
 
       - name: Deploy to Kubernetes
-        # run: |
-        #   sudo kubectl delete -f ./.github/dep.yaml
-        #   sudo kubectl apply -f ./.github/dep.yaml --patch '{"spec": {"template": {"spec": {"containers":{"tag":${{ env.VERSION }}}}}}}'
         run: |
           helm uninstall fastapi-sample -n touches-online-qa --ignore-not-found || true
           helm upgrade --install -f .github/helm/values-${{ inputs.environment }}.yaml --set fastapi-sample.tag=${{ env.VERSION }} fastapi-sample  .github/helm -n touches-online-qa
