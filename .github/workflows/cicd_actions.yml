@@ -28,8 +28,8 @@ jobs:
       - name: Build and tag Docker image
         run: |
           sudo docker build -t fastapi-sample:latest . 
-          sudo docker tag fastapi-sample:latest k3d-touches-online-registry:5050/fastapi-sample:latest
-          sudo docker push k3d-touches-online-registry:5050/fastapi-sample:latest
+          sudo docker tag fastapi-sample:latest localhost:5050/fastapi-sample:latest
+          sudo docker push localhost:5050/fastapi-sample:latest
 
       - name: Deploy to Kubernetes
         run: |
