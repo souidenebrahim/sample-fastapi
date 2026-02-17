@@ -12,10 +12,10 @@ spec:
     - host: fastapi-sample.touches.online
       http:
         paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: fastapi-sample-svc
-              port:
-                name: http
+          - pathType: Prefix
+            backend:
+              service:
+                name: fastapi-sample-svc
+                port:
+                  number: 80
+            path: /
