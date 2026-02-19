@@ -1,21 +1,31 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    ingress.kubernetes.io/ssl-redirect: "false"
+    meta.helm.sh/release-name: fastapi-sample
+    meta.helm.sh/release-namespace: touches-online-qa
+    traefik.ingress.kubernetes.io/rule-type: PathPrefix
+  generation: 1
+  labels:
+    app.kubernetes.io/managed-by: Helm
   name: fastapi-sample-ingress
   namespace: touches-online-qa
-  annotations:
-    ingress.kubernetes.io/ssl-redirect: "false"
-    kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/rule-type: PathPrefix
 spec:
+  ingressClassName: traefik                                #TBD
   rules:
-    - host: fastapi-sample.touches.online
-      http:
-        paths:
-          - pathType: Prefix
-            backend:
-              service:
-                name: fastapi-sample-svc
-                port:
-                  number: 80
-            path: /
+  - host: fastapi-sample.touches.online
+    http:
+      paths:
+      - backend:
+          service:
+            name: fastapi-sample-svc
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:                                                     #TBD
+    - hosts:
+        - fastapi-sample.touches.online
+      secretName: fastapi-sample-tls
